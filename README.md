@@ -1,13 +1,23 @@
-# Welcome to Defold
+# UTF8
 
-This project was created from the "empty" project template.
+utf8 library bindings for defold
+https://github.com/starwing/luautf8
 
-The settings in ["game.project"](defold://open?path=/game.project) are all the default. A bootstrap empty ["main.collection"](defold://open?path=/main/main.collection) is included.
+I use it in html and windows. But it should work everywhere.
 
-Check out [the documentation pages](https://defold.com/learn) for examples, tutorials, manuals and API docs.
+Examples.More info read in library.
 
-If you run into trouble, help is available in [our forum](https://forum.defold.com).
+Many routines are same as Lua's string module:
+- `utf8.byte`
+- `utf8.char`
+- `utf8.find`
+- `utf8.gmatch`
+- `utf8.gsub`
+- `utf8.len`
+- `utf8.lower`
+- `utf8.match`
+- `utf8.reverse`
+- `utf8.sub`
+- `utf8.upper`
 
-Happy Defolding!
 
----
