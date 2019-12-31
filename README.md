@@ -5,7 +5,17 @@ https://github.com/starwing/luautf8
 
 I use it in html and windows. But it should work everywhere.
 
-Examples.More info read in library.
+## Installation
+
+You can use Utf8 in your own project by adding this project as a Defold library dependency. Open your game.project file and in the dependencies field under project add:
+
+https://github.com/d954mas/defold-utf8/archive/master.zip
+
+Or point to the ZIP file of a specific release.
+
+## Examples
+
+More info read in library.
 
 Many routines are same as Lua's string module:
 - `utf8.byte`
