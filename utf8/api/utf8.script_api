@@ -1,0 +1,495 @@
+- name: utf8
+  type: table
+  desc: Provides UTF-8 support to Lua.
+  members:
+
+#*****************************************************************************************************
+  - name: fold
+    type: function
+    desc: Transforms a string into a case-folded form to perform case-insensitive string comparison.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to be transformed.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.fold("Lua"))
+            -- Output: lua (or another case-folded representation)
+            ```
+
+  - name: byte
+    type: function
+    desc: Returns the integer codes of the characters in a string.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to get byte values from.
+    - name: i
+      type: number
+      desc: The starting position.
+    - name: j
+      type: number
+      desc: The ending position, default is the value of `i`.
+    return:
+    - name: bytes
+      type: number...
+      desc: The integer values representing the bytes of the characters in the string.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.byte("Lua", 1, 3))
+            -- Output: 76 117 97
+            ```
+
+  - name: char
+    type: function
+    desc: Converts one or more numeric Unicode code points into a UTF-8 string.
+    parameters:
+    - name: ...
+      type: number
+      desc: One or more Unicode code points.
+    return:
+    - name: character
+      type: string
+      desc: The character or sequence of characters represented by the given Unicode code point(s).
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.char(76, 117, 97))
+            -- Output: Lua
+            ```
+
+  - name: escape
+    type: function
+    desc: Escapes a string to UTF-8 format string, supporting several escape formats to represent Unicode code points and special characters.
+    parameters:
+      - name: s
+        type: string
+        desc: The string to be escaped, containing escape sequences to be converted to their UTF-8 representation.
+    examples:
+      - desc: |-
+              ```lua
+              print(utf8.escape("%65")) -- ASCII for 'A'
+              -- Output: A
+
+              print(utf8.escape("%{65}")) -- Using brackets
+              -- Output: A
+
+              print(utf8.escape("%u65")) -- Unicode representation
+              -- Output: A
+
+              print(utf8.escape("%x41")) -- Hexadecimal format
+              -- Output: A
+
+              print(utf8.escape("%?"), "?") -- Escaping a special character
+              -- Output: ?
+              ```
+
+
+  - name: insert
+    type: function
+    desc: Inserts a substring into a given string at the specified position.
+    parameters:
+    - name: s
+      type: string
+      desc: The original string.
+    - name: pos
+      type: number
+      desc: The position at which to insert.
+    - name: substring
+      type: string
+      desc: The string to insert.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.insert("Hello World", 6, "Lua "))
+            -- Output: Hello Lua World
+            ```
+
+  - name: remove
+    type: function
+    desc: Removes a portion of a string between two positions.
+    parameters:
+    - name: s
+      type: string
+      desc: The original string.
+    - name: start
+      type: number
+      desc: The starting position for the removal.
+    - name: end
+      type: number
+      desc: The ending position for the removal.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.remove("Hello Lua World", 6, 9))
+            -- Output: Hello World
+            ```
+
+  - name: charpos
+    type: function
+    desc: Returns the position of a character in a string, accounting for UTF-8 encoding.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to be searched.
+    - name: n
+      type: number
+      desc: The character index.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.charpos("Hello Lua", 3))
+            -- Output: position of 'l' in "Lua"
+            ```
+
+  - name: next
+    type: function
+    desc: Returns the position of the next character in a UTF-8 string.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to be processed.
+    - name: position
+      type: number
+      desc: The current position in the string.
+    examples:
+    - desc: |-
+            ```lua
+            local pos = utf8.next("Hello Lua", 1)
+            print(pos)
+            -- Output: position of the second character
+            ```
+
+  - name: width
+    type: function
+    desc: Returns the width of a UTF-8 string, considering fullwidth and halfwidth characters.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to measure.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.width("文字"))
+            -- Output: width of the string in terminal cells
+            ```
+
+  - name: widthindex
+    type: function
+    desc: Returns the index in a string at a given visual width, considering UTF-8 characters.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to measure.
+    - name: width
+      type: number
+      desc: The visual width to check.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.widthindex("Hello Lua", 5))
+            -- Output: Index at which the total width reaches 5
+            ```
+
+  - name: ncasecmp
+    type: function
+    desc: Compares two strings case-insensitively.
+    parameters:
+    - name: s1
+      type: string
+      desc: The first string to compare.
+    - name: s2
+      type: string
+      desc: The second string to compare.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.ncasecmp("lua", "Lua"))
+            -- Output: 0 (indicates the strings are equal ignoring case)
+            ```
+
+  - name: find
+    type: function
+    desc: Finds the first occurrence of a pattern in a string.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to search.
+    - name: pattern
+      type: string
+      desc: The pattern to search for.
+    - name: init
+      type: number
+      desc: The starting position in the string.
+    - name: plain
+      type: boolean
+      desc: If true, the function does a plain search.
+    return:
+      - name: start
+        type: integer
+        desc: The start position of the first occurrence of the pattern.
+      - name: end
+        type: integer
+        desc: The end position of the first occurrence of the pattern.
+    examples:
+    - desc: |-
+            ```lua
+            local start_pos, end_pos = utf8.find("Hello Lua", "Lua")
+            print(start_pos, end_pos)
+            -- Output: 7 9
+            ```
+
+  - name: gmatch
+    type: function
+    desc: Returns an iterator function that returns the next captures from pattern over the string each time it is called.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to search.
+    - name: pattern
+      type: string
+      desc: The pattern to match.
+    return:
+    - name: iterator
+      type: function
+      desc: An iterator function that can be used to iterate over all matches of the pattern in the string.
+    examples:
+    - desc: |-
+            ```lua
+            for word in utf8.gmatch("Hello Lua User", "%a+") do
+                print(word)
+            end
+            -- Output: Hello
+            --         Lua
+            --         User
+            ```
+
+  - name: gsub
+    type: function
+    desc: Replaces occurrences of a pattern in a string.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to modify.
+    - name: pattern
+      type: string
+      desc: The pattern to search for replacement.
+    - name: repl
+      type: string or table or function
+      desc: The replacement string or a function/table to generate the replacement.
+    - name: n
+      type: number
+      desc: The maximum number of replacements.
+    return:
+      - name: result_string
+        type: string
+        desc: The resulting string after the replacements have been made.
+      - name: number_of_subs
+        type: integer
+        desc: The total number of substitutions made.
+    examples:
+    - desc: |-
+            ```lua
+            local result = utf8.gsub("Hello Lua", "Lua", "World")
+            print(result)
+            -- Output: Hello World
+            ```
+
+  - name: match
+    type: function
+    desc: Extracts substrings by matching a pattern.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to search.
+    - name: pattern
+      type: string
+      desc: The pattern to match.
+    - name: init
+      type: number
+      desc: The starting position in the string.
+    return:
+    - name: captured_values
+      type: string...
+      desc: The captured values from the string as matched by the pattern.
+    examples:
+    - desc: |-
+            ```lua
+            local match = utf8.match("Hello Lua", "%a+")
+            print(match)
+            -- Output: Hello
+            ```
+
+  - name: offset
+    type: function
+    desc: Returns the position (in bytes) of the character at a given index in a UTF-8 string.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to search.
+    - name: n
+      type: number
+      desc: The character index.
+    return:
+      - name: offset
+        type: number
+        desc: The byte position of the character at the given index, or nil if the index is out of range.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.offset("Hello Lua", 3))
+            -- Output: position of the third character in bytes
+            ```
+
+  - name: codes
+    type: function
+    desc: Returns an iterator function that can be used in a for loop to iterate over all characters in the string.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to iterate through.
+    return:
+      - name: iterator
+        type: function
+        desc: An iterator function that can be used in a for loop to iterate over all characters in the string.
+      - name: position
+        type: integer
+        desc: The position of the character in the string.
+      - name: codepoint
+        type: integer
+        desc: The Unicode code point of the character at the position.
+    examples:
+    - desc: |-
+            ```lua
+            for pos, code in utf8.codes("Hello") do
+                print(pos, code)
+            end
+            -- Output: positions and Unicode code points of each character
+            ```
+
+  - name: codepoint
+    type: function
+    desc: Returns the code points (as integers) of characters in a string that are at specified positions.
+    parameters:
+    - name: s
+      type: string
+      desc: The string from which to extract code points.
+    return:
+      - name: codepoint
+        type: number
+        desc: The Unicode code point(s) of the character(s) at the given position(s).
+    examples:
+      - desc: |-
+              ```lua
+              local cp = utf8.codepoint("Lua", 1, 3)
+              print(cp)
+              ```
+
+  - name: len
+    type: function
+    desc: Returns the length of the string in UTF-8 code units (characters), not bytes.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to get the length of.
+    return:
+      - name: length
+        type: integer
+        desc: The number of UTF-8 characters in the string.
+      - name: position_of_first_invalid_byte
+        type: integer
+        desc: The position of the first invalid byte in the string, if the string is not valid UTF-8.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.len("Hello Lua"))
+            -- Output: number of UTF-8 characters in the string
+            ```
+
+  - name: sub
+    type: function
+    desc: Returns a substring of a UTF-8 string between specified positions.
+    parameters:
+    - name: s
+      type: string
+      desc: The string from which to extract a substring.
+    return:
+    - name: substring
+      type: string
+      desc: The substring of the given string, starting from and ending at the specified positions.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.sub("Hello Lua", 2, 5))
+            -- Output: "ello"
+            ```
+
+  - name: reverse
+    type: function
+    desc: Reverses a UTF-8 string.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to be reversed.
+    return:
+    - name: reversed_string
+      type: string
+      desc: The reversed version of the given UTF-8 string.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.reverse("Lua"))
+            -- Output: "auL"
+            ```
+
+  - name: lower
+    type: function
+    desc: Converts a UTF-8 string to lowercase.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to be converted to lowercase.
+    return:
+    - name: lowercase_string
+      type: string
+      desc: The given string with all uppercase characters converted to lowercase.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.lower("Hello LUA"))
+            -- Output: "hello lua"
+            ```
+
+  - name: upper
+    type: function
+    desc: Converts a UTF-8 string to uppercase.
+    parameters:
+    - name: s
+      type: string
+      desc: The string to be converted to uppercase.
+    return:
+    - name: uppercase_string
+      type: string
+      desc: The given string with all lowercase characters converted to uppercase.
+    examples:
+    - desc: |-
+            ```lua
+            print(utf8.upper("Hello lua"))
+            -- Output: "HELLO LUA"
+            ```
+
+  - name: title
+    type: function
+    desc: Converts each character in a UTF-8 string to uppercase, similar to the utf8.upper function. This is an extended functionality where it's treated as converting to uppercase but keeping the name 'title' for semantic reasons.
+    parameters:
+      - name: s
+        type: string
+        desc: The string to be converted to uppercase.
+    examples:
+      - desc: |-
+              ```lua
+              print(utf8.title("hello lua"))
+              -- Output: "HELLO LUA"
+              ```
